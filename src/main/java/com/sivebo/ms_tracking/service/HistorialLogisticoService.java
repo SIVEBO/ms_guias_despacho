@@ -31,10 +31,10 @@ public class HistorialLogisticoService {
         private HistorialLogisticoResponseDTO mapToDTO(HistorialLogistico h) {
                 return new HistorialLogisticoResponseDTO(
                         h.getId(),
-                        h.getGuia().getId(),
+                        h.getGuia().getCodigoTracking(),
                         h.getEstado().getTipoEstado().name(),
-                        h.getIdSucursalActual(),
-                        h.getIdUsuario(),
+                        h.getNombreSucursalActual(),
+                        h.getUsername(),
                         h.getFechaHora(),
                         h.getComentario()
                 );
@@ -47,29 +47,29 @@ public class HistorialLogisticoService {
         }
 
         @Transactional(readOnly = true)
-        public List<HistorialLogisticoResponseDTO> getByGuiaId(Long guiaId) {
-                return historialRepository.findByGuiaIdOrderByFechaHoraAsc(guiaId)
+        public List<HistorialLogisticoResponseDTO> getByGuiaId(String codigoTracking) {
+                return historialRepository.findByGuiaCodigoTrackingOrderByFechaHoraAsc(codigoTracking)
                         .stream().map(this::mapToDTO).toList();
         }
 
         @Transactional(readOnly = true)
-        public Optional<HistorialLogisticoResponseDTO> getEstadoActual(Long guiaId) {
-                return historialRepository.findTopByGuiaIdOrderByFechaHoraDesc(guiaId)
+        public Optional<HistorialLogisticoResponseDTO> getEstadoActual(String codigoTracking) {
+                return historialRepository.findTopByGuiaCodigoTrackingOrderByFechaHoraDesc(codigoTracking)
                         .map(this::mapToDTO);
         }
 
         @Transactional
         public HistorialLogisticoResponseDTO create(HistorialLogisticoRequestDTO dto) {
-                GuiaDespacho guia = guiaDespachoRepository.findById(dto.getIdGuia())
+                GuiaDespacho guia = guiaDespachoRepository.findByCodigoTracking(dto.getCodigoTracking())
                         .orElseThrow(() -> new MicroserviceValidationException(
-                                "Guía con id " + dto.getIdGuia() + " no encontrada"));
-                EstadoMaestro estado = estadoMaestroRepository.findById(dto.getIdEstado())
+                                "Guía con código de tracking " + dto.getCodigoTracking() + " no encontrada"));
+                EstadoMaestro estado = estadoMaestroRepository.findByTipoEstado(dto.getNombreEstado())
                         .orElseThrow(() -> new MicroserviceValidationException(
-                                "Estado con id " + dto.getIdEstado() + " no encontrado"));
+                                "Estado " + dto.getNombreEstado() + " no encontrado"));
                 return mapToDTO(historialRepository.save(
                         new HistorialLogistico(
                                 null, guia, estado,
-                                dto.getIdSucursalActual(), dto.getIdUsuario(),
+                                dto.getNombreSucursalActual(), dto.getUsername(),
                                 dto.getFechaHora(), dto.getComentario()
                         )
                 ));

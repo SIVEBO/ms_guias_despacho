@@ -13,6 +13,6 @@ public class GuiaDespachoResponseDTO {
 
         Long id;
         String codigoTracking;
-        Long idAdmision;
+        String codigoAdmision;
         LocalDateTime fechaCreacion;
 }

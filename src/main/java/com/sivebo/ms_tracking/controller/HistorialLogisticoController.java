@@ -58,9 +58,9 @@ public class HistorialLogisticoController {
                 @ApiResponse(responseCode = "404", description = "Sin historial para la guía indicada",
                         content = @Content(mediaType = "application/json"))
         })
-        @GetMapping("/estado-actual/{idGuia}")
-        public ResponseEntity<HistorialLogisticoResponseDTO> getEstadoActual(@PathVariable Long idGuia) {
-                return historialLogisticoService.getEstadoActual(idGuia)
+        @GetMapping("/estado-actual/{codigoTracking}")
+        public ResponseEntity<HistorialLogisticoResponseDTO> getEstadoActual(@PathVariable String codigoTracking) {
+                return historialLogisticoService.getEstadoActual(codigoTracking)
                         .map(ResponseEntity::ok)
                         .orElse(ResponseEntity.notFound().build());
         }
@@ -74,9 +74,9 @@ public class HistorialLogisticoController {
                         content = @Content(mediaType = "application/json",
                                 schema = @Schema(implementation = HistorialLogisticoResponseDTO.class)))
         })
-        @GetMapping("/{idGuia}")
-        public List<HistorialLogisticoResponseDTO> getByGuiaId(@PathVariable Long idGuia) {
-                return historialLogisticoService.getByGuiaId(idGuia);
+        @GetMapping("/{codigoTracking}")
+        public List<HistorialLogisticoResponseDTO> getByGuiaId(@PathVariable String codigoTracking) {
+                return historialLogisticoService.getByGuiaId(codigoTracking);
         }
 
         @Operation(

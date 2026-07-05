@@ -41,7 +41,7 @@ public class GuiaDespachoService {
                 return new GuiaDespachoResponseDTO(
                         guia.getId(),
                         guia.getCodigoTracking(),
-                        guia.getIdAdmision(),
+                        guia.getCodigoAdmision(),
                         guia.getFechaCreacion()
                 );
         }
@@ -63,15 +63,15 @@ public class GuiaDespachoService {
         }
 
         @Transactional(readOnly = true)
-        public Optional<GuiaDespachoResponseDTO> getByIdAdmision(Long idAdmision) {
-                return guiaDespachoRepository.findByIdAdmision(idAdmision).map(this::mapToDTO);
+        public Optional<GuiaDespachoResponseDTO> getByCodigoAdmision(String codigoAdmision) {
+                return guiaDespachoRepository.findByCodigoAdmision(codigoAdmision).map(this::mapToDTO);
         }
 
         @Transactional
         public GuiaDespachoResponseDTO create(GuiaDespachoRequestDTO dto) {
-                webClientUtil.validateMicroServiceById(dto.getIdAdmision(), "admisiones", admisionWebClient);
+                webClientUtil.validateMicroServiceByQuery("admisiones", "codigoAdmision", dto.getCodigoAdmision(), admisionWebClient);
                 GuiaDespacho saved = guiaDespachoRepository.save(
-                        new GuiaDespacho(null, dto.getCodigoTracking(), dto.getIdAdmision(), LocalDateTime.now())
+                        new GuiaDespacho(null, dto.getCodigoTracking(), dto.getCodigoAdmision(), LocalDateTime.now())
                 );
                 EstadoMaestro recibido = estadoMaestroRepository.findByTipoEstado(TipoEstado.RECIBIDO)
                         .orElseThrow(() -> new MicroserviceValidationException(
@@ -84,7 +84,7 @@ public class GuiaDespachoService {
 
         @Transactional
         public Boolean delete(Long id) {
-                historialRepository.deleteAll(historialRepository.findByGuiaIdOrderByFechaHoraAsc(id));
+                historialRepository.deleteAll(historialRepository.findByGuiaId(id));
                 guiaDespachoRepository.deleteById(id);
                 return !guiaDespachoRepository.existsById(id);
         }

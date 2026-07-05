@@ -16,6 +16,6 @@ public class GuiaDespachoRequestDTO {
         @NotBlank(message = "El código de tracking es obligatorio")
         String codigoTracking;
 
-        @NotNull(message = "El id de admisión es obligatorio")
-        Long idAdmision;
+        @NotBlank(message = "El código de admisión es obligatorio")
+        String codigoAdmision;
 }

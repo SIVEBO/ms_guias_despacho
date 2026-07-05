@@ -66,7 +66,7 @@ public class GuiaDespachoController {
 
         @Operation(
                 summary = "Buscar guía por atributo",
-                description = "Busca por 'buscar?codigo_tracking=*' o 'buscar?id_admision=*'"
+                description = "Busca por 'buscar?codigoTracking=*' o 'buscar?codigoAdmision=*'"
         )
         @ApiResponses(value = {
                 @ApiResponse(responseCode = "200", description = "Guía encontrada",
@@ -80,9 +80,9 @@ public class GuiaDespachoController {
         @GetMapping("/buscar")
         public ResponseEntity<?> buscar(
                 @RequestParam(required = false) String codigoTracking,
-                @RequestParam(required = false) String idAdmision) {
+                @RequestParam(required = false) String codigoAdmision) {
 
-                long provided = Stream.of(codigoTracking, idAdmision)
+                long provided = Stream.of(codigoTracking, codigoAdmision)
                         .filter(Objects::nonNull).count();
 
                 if (provided == 0) {
@@ -95,8 +95,8 @@ public class GuiaDespachoController {
                                 .map(ResponseEntity::ok)
                                 .orElse(ResponseEntity.notFound().build());
                 } else {
-                        log.info(">>> Buscando guía por id de admisión: {}", idAdmision);
-                        return guiaDespachoService.getByIdAdmision(Long.valueOf(idAdmision))
+                        log.info(">>> Buscando guía por código de admisión: {}", codigoAdmision);
+                        return guiaDespachoService.getByCodigoAdmision(codigoAdmision)
                                 .map(ResponseEntity::ok)
                                 .orElse(ResponseEntity.notFound().build());
                 }

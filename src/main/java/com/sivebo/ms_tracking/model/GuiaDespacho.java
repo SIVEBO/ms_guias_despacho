@@ -26,8 +26,8 @@ public class GuiaDespacho {
         @Column(name = "codigo_tracking", nullable = false, unique = true, length = 12)
         String codigoTracking;
 
-        @Column(name = "id_admision", nullable = false)
-        Long idAdmision;
+        @Column(name = "codigo_admision", nullable = false, length = 20)
+        String codigoAdmision;
 
         @Column(name = "fecha_creacion", nullable = false)
         LocalDateTime fechaCreacion;

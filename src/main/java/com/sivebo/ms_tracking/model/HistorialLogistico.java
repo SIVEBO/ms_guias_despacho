@@ -26,18 +26,18 @@ public class HistorialLogistico {
         Long id;
 
         @ManyToOne(optional = false)
-        @JoinColumn(name = "id_guia")
+        @JoinColumn(name = "codigo_tracking", referencedColumnName = "codigo_tracking")
         GuiaDespacho guia;
 
         @ManyToOne(optional = false)
-        @JoinColumn(name = "id_estado")
+        @JoinColumn(name = "nombre_estado", referencedColumnName = "nombre_estado")
         EstadoMaestro estado;
 
-        @Column(name = "id_sucursal_actual")
-        Long idSucursalActual;
+        @Column(name = "nombre_sucursal_actual")
+        String nombreSucursalActual;
 
-        @Column(name = "id_usuario")
-        Long idUsuario;
+        @Column(name = "username")
+        String username;
 
         @Column(name = "fecha_hora", nullable = false)
         LocalDateTime fechaHora;

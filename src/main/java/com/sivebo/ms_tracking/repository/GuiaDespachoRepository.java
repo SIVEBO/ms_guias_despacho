@@ -10,5 +10,5 @@ public interface GuiaDespachoRepository extends JpaRepository<GuiaDespacho, Long
 
         Optional<GuiaDespacho> findByCodigoTracking(String codigoTracking);
 
-        Optional<GuiaDespacho> findByIdAdmision(Long idAdmision);
+        Optional<GuiaDespacho> findByCodigoAdmision(String codigoAdmision);
 }

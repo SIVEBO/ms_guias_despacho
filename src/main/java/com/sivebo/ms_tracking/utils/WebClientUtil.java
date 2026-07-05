@@ -33,7 +33,7 @@ public class WebClientUtil {
         public void validateMicroServiceByQuery(String nameService, String query, String value, WebClient webClient) {
                 try {
                         webClient.get()
-                                .uri("/api/v1/" + nameService + "/search?" + query + "=" + value)
+                                .uri("/api/v1/" + nameService + "/buscar?" + query + "=" + value)
                                 .retrieve()
                                 .bodyToMono(String.class)
                                 .block();

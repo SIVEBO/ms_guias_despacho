@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 public class HistorialLogisticoResponseDTO {
 
         Long id;
-        Long idGuia;
+        String codigoTracking;
         String nombreEstado;
-        Long idSucursalActual;
-        Long idUsuario;
+        String nombreSucursalActual;
+        String username;
         LocalDateTime fechaHora;
         String comentario;
 }

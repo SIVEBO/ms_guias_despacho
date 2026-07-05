@@ -9,7 +9,9 @@ import com.sivebo.ms_tracking.model.HistorialLogistico;
 
 public interface HistorialLogisticoRepository extends JpaRepository<HistorialLogistico, Long> {
 
-        List<HistorialLogistico> findByGuiaIdOrderByFechaHoraAsc(Long guiaId);
+        List<HistorialLogistico> findByGuiaId(Long guiaId);
 
-        Optional<HistorialLogistico> findTopByGuiaIdOrderByFechaHoraDesc(Long guiaId);
+        List<HistorialLogistico> findByGuiaCodigoTrackingOrderByFechaHoraAsc(String codigoTracking);
+
+        Optional<HistorialLogistico> findTopByGuiaCodigoTrackingOrderByFechaHoraDesc(String codigoTracking);
 }
