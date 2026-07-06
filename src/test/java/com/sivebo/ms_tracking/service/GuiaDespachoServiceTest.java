@@ -48,7 +48,7 @@ class GuiaDespachoServiceTest {
         @InjectMocks GuiaDespachoService service;
 
         private static final GuiaDespacho GUIA =
-                new GuiaDespacho(1L, "ABC123456789", 10L, LocalDateTime.of(2026, 1, 1, 0, 0));
+                new GuiaDespacho(1L, "ABC123456789", "ADM123456789", LocalDateTime.of(2026, 1, 1, 0, 0));
 
         private static final EstadoMaestro RECIBIDO =
                 new EstadoMaestro(1L, TipoEstado.RECIBIDO, 1);
@@ -63,7 +63,7 @@ class GuiaDespachoServiceTest {
                 GuiaDespachoResponseDTO dto = result.get(0);
                 assertEquals(GUIA.getId(), dto.getId());
                 assertEquals(GUIA.getCodigoTracking(), dto.getCodigoTracking());
-                assertEquals(GUIA.getIdAdmision(), dto.getIdAdmision());
+                assertEquals(GUIA.getCodigoAdmision(), dto.getCodigoAdmision());
                 assertEquals(GUIA.getFechaCreacion(), dto.getFechaCreacion());
         }
 
@@ -96,22 +96,22 @@ class GuiaDespachoServiceTest {
         }
 
         @Test
-        void getByIdAdmisionFoundReturnsDTO() {
-                when(guiaDespachoRepository.findByIdAdmision(10L)).thenReturn(Optional.of(GUIA));
+        void getByCodigoAdmisionFoundReturnsDTO() {
+                when(guiaDespachoRepository.findByCodigoAdmision("ADM123456789")).thenReturn(Optional.of(GUIA));
 
-                Optional<GuiaDespachoResponseDTO> result = service.getByIdAdmision(10L);
+                Optional<GuiaDespachoResponseDTO> result = service.getByCodigoAdmision("ADM123456789");
 
                 assertTrue(result.isPresent());
-                assertEquals(10L, result.get().getIdAdmision());
+                assertEquals("ADM123456789", result.get().getCodigoAdmision());
         }
 
         @Test
         void createValidRequestSavesGuiaAndHistorial() {
-                GuiaDespachoRequestDTO dto = new GuiaDespachoRequestDTO("ABC123456789", 10L);
-                GuiaDespacho saved = new GuiaDespacho(1L, "ABC123456789", 10L, LocalDateTime.now());
+                GuiaDespachoRequestDTO dto = new GuiaDespachoRequestDTO("ABC123456789", "ADM123456789");
+                GuiaDespacho saved = new GuiaDespacho(1L, "ABC123456789", "ADM123456789", LocalDateTime.now());
 
                 doNothing().when(webClientUtil)
-                        .validateMicroServiceById(anyLong(), anyString(), any(WebClient.class));
+                        .validateMicroServiceByQuery(anyString(), anyString(), anyString(), any(WebClient.class));
                 when(guiaDespachoRepository.save(any())).thenReturn(saved);
                 when(estadoMaestroRepository.findByTipoEstado(TipoEstado.RECIBIDO))
                         .thenReturn(Optional.of(RECIBIDO));
@@ -128,18 +128,19 @@ class GuiaDespachoServiceTest {
 
         @Test
         void createAdmisionNotFoundThrowsMicroserviceValidationException() {
-                GuiaDespachoRequestDTO dto = new GuiaDespachoRequestDTO("ABC123456789", 10L);
+                GuiaDespachoRequestDTO dto = new GuiaDespachoRequestDTO("ABC123456789", "ADM123456789");
                 doThrow(new MicroserviceValidationException("admision no existe"))
-                        .when(webClientUtil).validateMicroServiceById(eq(10L), anyString(), any(WebClient.class));
+                        .when(webClientUtil).validateMicroServiceByQuery(
+                                eq("admisiones"), eq("codigoAdmision"), eq("ADM123456789"), any(WebClient.class));
 
                 assertThrows(MicroserviceValidationException.class, () -> service.create(dto));
         }
 
         @Test
         void createRecibidoMissingThrowsMicroserviceValidationException() {
-                GuiaDespachoRequestDTO dto = new GuiaDespachoRequestDTO("ABC123456789", 10L);
+                GuiaDespachoRequestDTO dto = new GuiaDespachoRequestDTO("ABC123456789", "ADM123456789");
                 doNothing().when(webClientUtil)
-                        .validateMicroServiceById(anyLong(), anyString(), any(WebClient.class));
+                        .validateMicroServiceByQuery(anyString(), anyString(), anyString(), any(WebClient.class));
                 when(guiaDespachoRepository.save(any())).thenReturn(GUIA);
                 when(estadoMaestroRepository.findByTipoEstado(TipoEstado.RECIBIDO))
                         .thenReturn(Optional.empty());
